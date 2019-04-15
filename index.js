@@ -37,68 +37,53 @@ module.exports = class CascadeOptimizer {
 
             compilation.hooks.afterOptimizeChunks.tap('CascadeOptimizer', (chunks) => {
 
-                let customChunk = null;
-                let customIndex = null;
-                let commonTargetsNames = null;
                 let targetName = null;
                 let targetIndex = null;
-                let targetChunk = null;
-                let i = null;
-                let length = null;
-                let toRemove = [];
+                let c = null, t = null;
+                let length = chunks.length;
 
                 // DISTRIBUTE COMMON CODE ALONG OUTPUT FILES
-                chunks.forEach((chunkA, indexA) => {
+                for (c = length - 1; c >= 0; c--) {
 
                     // SEARCH FOR A CUSTOM CHUNK
-                    if (chunkA.name.match(/^custom~.+$/)) {
-
-                        customChunk = chunkA;
-                        customIndex = indexA;
-                        commonTargetsNames = chunkA.name.replace(/^custom~/, '').split('~');
+                    if (chunks[c].name.match(/^custom~.+$/)) {
 
                         // CHOOSE TARGET CHUNK BASED ON FILE PRIORITY
                         targetName = null;
                         targetIndex = null;
-                        commonTargetsNames.forEach((name) => {
-                            this.options.fileOrder.forEach((fileName, indexB) => {
-                                if (fileName === name && (targetName === null || indexB < targetIndex)) {
+                        chunks[c].name.replace(/^custom~/, '').split('~').forEach((name) => {
+                            this.options.fileOrder.forEach((fileName, index) => {
+                                if (name === fileName && (targetName === null || index < targetIndex)) {
                                     targetName = fileName;
-                                    targetIndex = indexB;
+                                    targetIndex = index;
                                 }
                             });
                         });
 
                         // SEARCH FOR TARGET CHUNK
-                        chunks.forEach((chunkB) => {
-                            if (chunkB.name === targetName) {
-                                targetChunk = chunkB;
+                        for (t = 0; t < length; t++) {
+                            if (chunks[t].name === targetName) {
                                 // MOVE MODULES FROM CUSTOM CHUNK TO TARGET CHUNK
-                                customChunk.modulesIterable.forEach((module) => {
-                                    customChunk.moveModule(module, targetChunk);
-                                    // ADD CUSTOM CHUNK TO REMOVE LIST
-                                    toRemove.push(customChunk.name);
+                                chunks[c].modulesIterable.forEach((module) => {
+                                    chunks[c].moveModule(module, chunks[t]);
                                 });
+                                // REMOVE CUSTOM CHUNK
+                                if (chunks[c].isEmpty() && !chunks[c].hasRuntime() && !chunks[c].hasEntryModule()) {
+                                    chunks[c].remove();
+                                    chunks.splice(c, 1);
+                                }
+                                break;
                             }
-                        });
+                        }
 
                     }
 
-                });
-
-                // REMOVE CHUNKS IN REMOVE LIST
-                length = chunks.length;
-                for (i = length - 1; i >= 0; i--) {
-                    if (toRemove.includes(chunks[i].name) && chunks[i].isEmpty() && !chunks[i].hasRuntime() && !chunks[i].hasEntryModule()) {
-                        chunks[i].remove();
-                        chunks.splice(i, 1);
-                    }
                 }
 
             });
 
         });
 
-    }
+    };
 
 };
