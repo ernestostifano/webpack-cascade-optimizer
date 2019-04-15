@@ -1,0 +1,23 @@
+{
+  "name": "webpack-cascade-optimizer-plugin",
+  "version": "1.0.0",
+  "description": "A Webpack plugin that distributes common code along output files on a First-come, First-served basis.",
+  "main": "index.js",
+  "scripts": {
+  },
+  "keywords": [
+    "Webpack",
+    "plugin",
+    "splitChunks",
+    "commonsChunk",
+    "optimize",
+    "distribute",
+    "split",
+    "merge",
+    "move",
+    "order",
+    "priority"
+  ],
+  "author": "ernestostifano",
+  "license": "ISC"
+}
