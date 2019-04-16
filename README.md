@@ -97,7 +97,7 @@ The following example of what webpack-cascade-optimizer-plugin does should be se
  */
 ```
 
-**This is especially useful if** you are loading your files in a sequence (fileA.js -> fileB.js -> fileC.js) and you want your code to be usable before all files are loaded. **Successive files while reuse modules already loaded by previous files!**
+**This is especially useful if** you are loading your files in a sequence (fileA.js -> fileB.js -> fileC.js) and you want your code to be usable before all files are loaded. **Successive files will reuse modules already loaded by previous files!**
 
 ### Install
 

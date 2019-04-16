@@ -1,8 +1,8 @@
 "use strict";
 
-/** @license webpack-cascade-optimizer-plugin v1.0.0
+/** @license webpack-cascade-optimizer-plugin v1.0.2
  *
- * Copyright (c) ernestostifano and its affiliates.
+ * Copyright (c) 2019, ernestostifano
  *
  * This source code is licensed under the ISC license found in the
  * LICENSE.md file in the root directory of this source tree.
@@ -10,9 +10,24 @@
 
 module.exports = class CascadeOptimizer {
 
+    /**
+     * @param {Object}      options
+     * @param {Array}       options.fileOrder
+     */
+
     constructor(options) {
         this.options = options;
     }
+
+    /**
+     * @param {Object}      compiler
+     * @param {Object}      compiler.options
+     * @param {Object}      compiler.options.optimization
+     * @param {Object}      compiler.options.splitChunks
+     * @param {Object}      compiler.hooks
+     * @param {Object}      compiler.hooks.thisCompilation
+     * @param {function}    compiler.hooks.thisCompilation.tap
+     */
 
     apply(compiler) {
 
@@ -33,9 +48,29 @@ module.exports = class CascadeOptimizer {
             name: this.options.fileOrder[0]
         };
 
-        compiler.hooks.thisCompilation.tap('CascadeOptimizer', (compilation) => {
+        compiler.hooks.thisCompilation.tap('CascadeOptimizer',
 
-            compilation.hooks.afterOptimizeChunks.tap('CascadeOptimizer', (chunks) => {
+            /**
+             * @param {Object}      compilation
+             * @param {Object}      compilation.hooks
+             * @param {Object}      compilation.hooks.afterOptimizeChunks
+             * @param {function}    compilation.hooks.afterOptimizeChunks.tap
+             */
+
+            (compilation) => {
+
+            compilation.hooks.afterOptimizeChunks.tap('CascadeOptimizer',
+
+                /**
+                 * @param {Array[]}     chunks
+                 * @param {function}    chunks[].moveModule
+                 * @param {function}    chunks[].isEmpty
+                 * @param {function}    chunks[].hasRuntime
+                 * @param {function}    chunks[].hasEntryModule
+                 * @param {Array}       chunks[].modulesIterable
+                 */
+
+                (chunks) => {
 
                 let targetName = null;
                 let targetIndex = null;
@@ -48,7 +83,7 @@ module.exports = class CascadeOptimizer {
                     // SEARCH FOR A CUSTOM CHUNK
                     if (chunks[c].name.match(/^custom~.+$/)) {
 
-                        // CHOOSE TARGET CHUNK BASED ON FILE PRIORITY
+                        // CHOOSE TARGET CHUNK BASED ON PROVIDED FILE NAME ORDER
                         targetName = null;
                         targetIndex = null;
                         chunks[c].name.replace(/^custom~/, '').split('~').forEach((name) => {
