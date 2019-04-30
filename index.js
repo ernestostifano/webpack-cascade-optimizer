@@ -1,6 +1,6 @@
 "use strict";
 
-/** @license webpack-cascade-optimizer-plugin v1.0.2
+/** @license webpack-cascade-optimizer-plugin v1.0.3
  *
  * Copyright (c) 2019, ernestostifano
  *
@@ -45,7 +45,7 @@ module.exports = class CascadeOptimizer {
             }
         };
         compiler.options.optimization.runtimeChunk = {
-            name: this.options.fileOrder[0]
+            name: typeof this.options.fileOrder[0] === "string" ? this.options.fileOrder[0] : compiler.options.optimization.runtimeChunk.name
         };
 
         compiler.hooks.thisCompilation.tap('CascadeOptimizer',
