@@ -1,5 +1,9 @@
 # Change History
 
+**v1.0.5 (2019-04-30)**
+
+- Bug fix
+
 **v1.0.4 (2019-04-30)**
 
 - Bug fix

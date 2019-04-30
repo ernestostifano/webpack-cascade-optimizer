@@ -1,6 +1,6 @@
 "use strict";
 
-/** @license webpack-cascade-optimizer-plugin v1.0.4
+/** @license webpack-cascade-optimizer-plugin v1.0.5
  *
  * Copyright (c) 2019, ernestostifano
  *
@@ -39,7 +39,7 @@ module.exports = class CascadeOptimizer {
             default: false,
             vendors: false,
             custom: {
-                test: /(node_modules)/,
+                test: /(?:node_modules)/,
                 chunks: 'all',
                 enforce: true
             }
@@ -106,6 +106,7 @@ module.exports = class CascadeOptimizer {
                                 if (chunks[c].isEmpty() && !chunks[c].hasRuntime() && !chunks[c].hasEntryModule()) {
                                     chunks[c].remove();
                                     chunks.splice(c, 1);
+                                    length--;
                                 }
                                 break;
                             }
