@@ -1,6 +1,6 @@
 {
   "name": "webpack-cascade-optimizer-plugin",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A Webpack plugin that distributes common code along output files on a First-come, First-served basis.",
   "main": "index.js",
   "scripts": {},
